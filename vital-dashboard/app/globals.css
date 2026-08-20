@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0A0A0C;
+  color: #E9E7E2;
+  font-family: var(--font-rajdhani), sans-serif;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.012) 0px,
+    rgba(255, 255, 255, 0.012) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Moldura de canto estilo "reticle" — o elemento assinatura do VITAL,
+   usado em todo painel em vez de uma borda fechada comum. */
+.corner-frame {
+  position: relative;
+  border: 1px solid #28282C;
+  background-color: #111113;
+}
+
+.corner-frame::before,
+.corner-frame::after,
+.corner-frame > .corner-bl,
+.corner-frame > .corner-br {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+
+.corner-frame::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid #48484E;
+  border-left: 1.5px solid #48484E;
+}
+
+.corner-frame::after {
+  top: -1px;
+  right: -1px;
+  border-top: 1.5px solid #48484E;
+  border-right: 1.5px solid #48484E;
+}
+
+.corner-frame > .corner-bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1.5px solid #48484E;
+  border-left: 1.5px solid #48484E;
+}
+
+.corner-frame > .corner-br {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid #48484E;
+  border-right: 1.5px solid #48484E;
+}
+
+.corner-frame.active::before,
+.corner-frame.active::after,
+.corner-frame.active > .corner-bl,
+.corner-frame.active > .corner-br {
+  border-color: #FF7A1A;
+}
+
+.label-tracked {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mono {
+  font-family: var(--font-plex-mono), monospace;
+}
+
+.vital-input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid #2d2d33;
+  background: #0d0d10;
+  color: #e9e7e2;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12px;
+  padding: 0 10px;
+  outline: none;
+}
+
+.vital-input:focus {
+  border-color: #48484e;
+}
+
+.vital-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vital-button {
+  height: 38px;
+  border: 1px solid #ff7a1a;
+  background: transparent;
+  color: #ff7a1a;
+  padding: 0 14px;
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background-color 120ms ease, color 120ms ease, opacity 120ms ease;
+}
+
+.vital-button:hover:not(:disabled) {
+  background: #ff7a1a;
+  color: #0a0a0c;
+}
+
+.vital-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
