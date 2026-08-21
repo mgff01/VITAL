@@ -1,79 +1,127 @@
 # VITAL
 
-Painel de monitoramento para o seu ESP32 — temperatura, umidade e inclinação,
-com visual inspirado na interface da BRIDGES (Death Stranding).
+Painel de monitoramento — temperatura, umidade e inclinação.
 
-## Rodando o projeto
+---
 
-Você precisa do Node.js instalado (versão 18 ou mais recente).
+## Requisitos do projeto
+
+- Node.js 18+ e npm (ou pnpm/yarn) para rodar o dashboard localmente.
+- Acesso à rede local onde o ESP32 está conectado (mesma sub-rede para o
+  envio HTTP do dispositivo ao servidor do dashboard).
+- Permissões para acessar portas seriais (apenas quando usar a feature
+  "wifi setup (usb only)"). No macOS/Linux pode ser necessário ajustar
+  permissões do dispositivo USB ou executar o servidor com privilégios que
+  permitam acesso à porta serial.
+- (Opcional) Ferramentas para compilar e gravar o firmware do ESP32
+  (ESP-IDF/PlatformIO/Arduino IDE) para atualizar o código embarcado.
+
+Dependências principais (declared em vital-dashboard/package.json):
+- next, react, react-dom — para o dashboard (Next.js)
+- recharts — gráficos de histórico
+- lucide-react — ícones
+- serialport — integração local via USB (para enviar SSID/senha ao ESP32)
+
+---
+
+## Lista de especificações
+
+- Endpoint de leitura (ESP32 -> dashboard):
+  - Método: POST
+  - URL: /api/reading
+  - Payload JSON esperado:
+    - temperatura: number (°C)
+    - umidade: number (%)
+    - motionState: number (0..100) — escala que representa quão inclinado o
+      sensor está (0 = estável, 100 = inclinado)
+    - inclinado: boolean (compatibilidade, derived)
+
+- Polling do dashboard para atualizar a UI:
+  - Intervalo: 3 segundos (frontend faz GET em /api/reading)
+  - Timeout para considerar o dispositivo offline: 15 segundos sem leituras
+
+- Histórico:
+  - O servidor mantém até 200 amostras em memória (lib/store.js).
+  - O histórico é reiniciado quando o servidor Next.js reinicia (intencional).
+
+- Wi‑Fi update (USB-only):
+  - Disponível apenas quando o dashboard estiver rodando na máquina local
+    conectada fisicamente ao ESP32 via USB.
+  - Fluxo:
+    1. Usuário preenche SSID e senha no painel "wifi setup (usb only)".
+    2. Dashboard lista portas seriais e escolhe a mais provável (ou a
+       selecionada manualmente) e envia uma string serial formatada:
+       `WIFI_CONFIG|<ssid>|<password>\n`.
+    3. ESP32 responde via Serial com `WIFI_CONFIG_OK|ssid=<ssid>` em caso
+       de sucesso, ou `WIFI_CONFIG_ERR|<motivo>` em caso de erro.
+    4. ESP32 grava em NVS e tenta reconectar ao novo Wi‑Fi.
+  - Observação: esse fluxo não funciona em hosts remotos (Vercel, Netlify,
+    etc.) porque não têm acesso à porta USB do seu hardware.
+
+---
+
+## Componentes (hardware)
+
+Os "componentes" deste projeto referem-se aos sensores e periféricos
+conectados ao ESP32 que fornecem as leituras exibidas no dashboard.
+
+- DHT11 (sensor de temperatura e umidade)
+  - Função: mede temperatura (°C) e umidade relativa (%).
+  - Ligação no projeto: DATA → GPIO4
+  - Observações: o código usa a biblioteca DHT e espera valores numéricos;
+    DHT22 é recomendado se precisar de maior precisão.
+
+- Sensor de inclinação (tilt switch)
+  - Função: detecta quando o módulo é inclinado; o projeto mapeia esse
+    sinal para uma escala visual 0..100 (motionState).
+  - Ligação no projeto: sinal digital → GPIO5 (com pull-up interno ativo)
+  - Observações: o firmware normaliza polaridade para evitar leituras
+    invertidas (há comentário no código sobre isso).
+
+- Fonte / alimentação
+  - Fornecer 5V via USB ou 3.3V regulada conforme o módulo/plataforma usada.
+  - Evitar alimentar sensores diretamente de fontes instáveis.
+
+- Interface USB / Serial
+  - Função: comunicação com o computador para debug e para a feature
+    "wifi setup (usb only)" (envio de SSID/senha via serial).
+  - Observações: o comando serial usado pelo dashboard é:
+    `WIFI_CONFIG|<ssid>|<password>\n` — o ESP32 responde com
+    `WIFI_CONFIG_OK|ssid=<ssid>` ou `WIFI_CONFIG_ERR|<motivo>`.
+
+- ESP32 (módulo)
+  - O microcontrolador que integra os sensores, executa o firmware e
+    conecta-se ao Wi‑Fi para enviar as leituras ao dashboard.
+
+---
+
+- Firmware ESP32 (no repositório raiz):
+  - esp32.c++ — código do microcontrolador (ex.: Arduino/PlatformIO) que
+    lê DHT, sensor de inclinação, publica JSON para /api/reading e aceita
+    comandos seriais `WIFI_CONFIG|ssid|password` para atualizar credenciais
+    (salva em NVS). Veja comentários no topo do arquivo para os pinos usados.
+
+---
+
+## Rodando localmente
+
+1. Entrar na pasta do dashboard e instalar dependências:
 
 ```bash
+cd vital-dashboard
 npm install
+```
+
+2. Rodar em modo dev:
+
+```bash
 npm run dev
 ```
 
-Abra `http://localhost:3000` no navegador. O terminal também vai mostrar
-o IP da sua máquina na rede local (ou rode `npm run dev -- -H 0.0.0.0` e
-descubra o IP com `ipconfig`/`ifconfig`) — é esse IP que o ESP32 vai usar
-para enviar os dados, já que ele está em outro dispositivo na sua rede Wi-Fi.
+3. Abrir http://localhost:3000
 
-## Como os dados chegam
+- Para usar a função de trocar Wi‑Fi pelo painel: plugue o ESP32 via USB
+  no mesmo computador que está rodando o Next.js e permita acesso à porta
+  serial (se necessário).
 
-O ESP32 envia os dados via Wi-Fi com uma requisição HTTP POST para:
-
-```
-http://SEU_IP_LOCAL:3000/api/reading
-```
-
-Com o corpo em JSON:
-
-```json
-{ "temperatura": 24.6, "umidade": 58.2, "motionState": 100, "inclinado": true }
-```
-
-O código do ESP32 (`.ino`) que faz esse envio está em anexo separado —
-ele lê o DHT e o sensor de inclinação e manda pro dashboard a cada poucos
-segundos.
-
-O dashboard atualiza a tela sozinho a cada 3 segundos, puxando os dados
-mais recentes do servidor. Se o ESP32 parar de enviar por mais de 15
-segundos, o indicador muda para "offline".
-
-## Trocar Wi-Fi do ESP32 pelo dashboard (somente via USB)
-
-Agora existe um painel `wifi setup (usb only)` na tela principal.
-
-- Essa função **só funciona com o ESP32 plugado por cabo USB** no mesmo
-  computador que está rodando o Next.js.
-- O dashboard envia as novas credenciais pela porta serial e o ESP32 salva
-  em memória persistente (NVS), tentando reconectar no Wi-Fi imediatamente.
-- Se não houver porta serial detectada, o botão fica desabilitado e a API
-  retorna erro informando que o ESP32 precisa estar plugado.
-
-## Estrutura do projeto
-
-```
-vital-dashboard/
-  app/
-    page.js              - a tela do dashboard
-    layout.js            - fontes e estrutura raiz
-    globals.css          - estilos e a moldura de canto (elemento visual assinatura)
-    api/reading/route.js - endpoint que recebe (POST) e serve (GET) os dados
-    api/device/wifi/route.js - endpoint USB/serial para trocar credenciais Wi-Fi
-  components/
-    CornerFrame.js        - a moldura de canto reutilizável
-    HistoryChart.js        - gráfico de linha compacto
-  lib/
-    store.js              - armazenamento em memória das últimas leituras
-    serialWifi.js         - integração serial com ESP32 para update de rede
-```
-
-## Observações
-
-- Os dados ficam guardados em memória — se você reiniciar o servidor
-  (`npm run dev`), o histórico zera. Isso é de propósito, para manter o
-  projeto simples; se quiser persistência entre reinicializações, dá para
-  trocar `lib/store.js` por um arquivo JSON ou um banco tipo SQLite.
-- Em produção real (fora da sua rede local), o ESP32 e o servidor Next.js
-  precisam estar na mesma rede, ou você precisaria hospedar o dashboard
-  em algum lugar acessível pela internet.
+---
