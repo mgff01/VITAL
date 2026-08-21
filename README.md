@@ -1,6 +1,5 @@
-# VITAL
-
-Painel de monitoramento — temperatura, umidade e inclinação.
+# VITAL Painel de monitoramento — temperatura, umidade e inclinação.
+<img width="1844" height="730" alt="image" src="https://github.com/user-attachments/assets/131fc629-7087-49cc-9e6a-329258efc6c4" />
 
 ---
 
