@@ -1,0 +1,4 @@
+{
+  "descricao": "Alinhamento do modelo vital.stl com os eixos do LIS3DSH, medido em 12/11/2026: com o texto VITAL para cima o eixo +X do sensor aponta para cima; com a caixa em pe e o lado do L para cima, o eixo +Y aponta para cima.",
+  "alinhamento": [0, 90, 0]
+}

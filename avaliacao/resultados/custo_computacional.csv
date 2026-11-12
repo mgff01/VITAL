@@ -1,0 +1,5 @@
+﻿Método;Tempo por amostra (µs);Memória de estado (bytes);Uso da CPU a 50 Hz (%)
+M1 Bruto (sem filtro);8,885;0;0,044425
+M2 EMA α=0,1 (VITAL);9,479;12;0,04739499999999999
+M3 Média móvel N=20;11,67;256;0,058350000000000006
+M4 Kalman 1D;10,188;8;0,05094

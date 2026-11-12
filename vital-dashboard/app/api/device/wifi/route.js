@@ -1,26 +1,14 @@
 import { NextResponse } from 'next/server';
-import { enviarCredenciaisWiFiViaUsb, listarPortasSeriais } from '@/lib/serialWifi';
+import { enviarCredenciaisWiFiViaUsb, escolherPorta, listarPortasSeriais } from '@/lib/serialDevice';
 
 export const runtime = 'nodejs';
-
-function escolherPorta(ports, portPath) {
-  if (portPath) {
-    return ports.find((porta) => porta.path === portPath) ?? null;
-  }
-
-  const candidatas = ports.filter((porta) => porta.likelyEsp32);
-  if (candidatas.length > 0) {
-    return candidatas[0];
-  }
-
-  return ports[0] ?? null;
-}
 
 export async function GET() {
   try {
     const ports = await listarPortasSeriais();
     return NextResponse.json({
-      pluggedIn: ports.length > 0,
+      // portas Bluetooth (COMx no Windows) não contam como ESP32 plugado
+      pluggedIn: ports.some((porta) => porta.likelyEsp32),
       ports,
     });
   } catch (err) {

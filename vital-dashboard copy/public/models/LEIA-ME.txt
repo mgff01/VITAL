@@ -1,0 +1,13 @@
+Modelo 3D do VITAL usado na aba 3D VIEW do painel.
+
+- vital.stl  : modelo exportado do Fusion (78 x 37 x 35 mm). Tambem aceita
+               vital.glb, vital.gltf ou vital.obj (o primeiro que existir).
+- vital.json : alinhamento do modelo com os eixos do acelerometro, em graus
+               ([x, y, z], ordem XYZ). Valor atual [0, 90, 0], medido assim:
+                 * texto VITAL para cima      -> eixo +X do sensor para cima
+                 * caixa em pe, lado do L em cima -> eixo +Y do sensor para cima
+               Se a placa for montada de outro jeito dentro da caixa, refaca
+               as duas medidas e ajuste este valor.
+
+Os botoes ALIGN do painel giram o modelo de 90 graus so no seu navegador;
+RESET volta para o valor do vital.json.

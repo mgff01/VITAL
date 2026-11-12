@@ -1,0 +1,5 @@
+metodo,us_min,us_media,bytes_estado,cpu_mhz
+bruto,8.885,8.886,0,80
+ema,9.479,9.480,12,80
+media_movel,11.670,11.670,256,80
+kalman,10.188,10.189,8,80

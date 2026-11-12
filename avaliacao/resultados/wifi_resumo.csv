@@ -1,0 +1,3 @@
+﻿Modo;Envios;Entregues;Taxa de entrega (%);Latência média (ms);Desvio (ms);Mediana (ms);P95 (ms);Máx. (ms)
+Conexão nova a cada envio (VITAL);61;58;95,08196721311475;108,58449999999998;52,67555246290189;92,5915;165,59379999999996;433,66
+Conexão persistente (keep-alive);42;42;100,0;99,37359523809523;38,09580415220164;78,9845;186,19174999999998;191,725

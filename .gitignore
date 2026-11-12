@@ -1,0 +1,17 @@
+# dependências e builds
+node_modules/
+.next/
+out/
+
+# Python (ambiente da avaliação)
+.venv/
+__pycache__/
+*.pyc
+
+# dados gerados em tempo de execução
+vital-dashboard/data/
+avaliacao/dados/incompletos/
+
+# configurações locais
+.claude/
+.env*.local

@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+.env*.local
+npm-debug.log*
+
+# histórico de impactos gravado pelo painel
+data/

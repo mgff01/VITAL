@@ -65,7 +65,7 @@ vital-dashboard/
     HistoryChart.js        - gráfico de linha compacto
   lib/
     store.js              - armazenamento em memória das últimas leituras
-    serialWifi.js         - integração serial com ESP32 para update de rede
+    serialDevice.js       - integração serial com ESP32 (Wi-Fi e calibração)
 ```
 
 ## Observações

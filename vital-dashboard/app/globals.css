@@ -129,3 +129,54 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Botão selecionado em grupos (filtros, controles segmentados) */
+.vital-button[aria-pressed='true'] {
+  background: #ff7a1a;
+  color: #0a0a0c;
+}
+
+.vital-button-sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 11px;
+}
+
+/* Abas */
+.vital-tab {
+  position: relative;
+  height: 36px;
+  padding: 0 2px;
+  background: transparent;
+  color: #7a7a80;
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 120ms ease;
+}
+
+.vital-tab:hover {
+  color: #e9e7e2;
+}
+
+.vital-tab[aria-selected='true'] {
+  color: #ff7a1a;
+}
+
+.vital-tab[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #ff7a1a;
+}
+
+.vital-tab:focus-visible,
+.vital-button:focus-visible {
+  outline: 1px solid #e9e7e2;
+  outline-offset: 2px;
+}
