@@ -1,7 +1,7 @@
 # VITAL Painel de monitoramento — temperatura, umidade, inclinação e vibração.
 <img width="1844" height="730" alt="image" src="https://github.com/user-attachments/assets/131fc629-7087-49cc-9e6a-329258efc6c4" />
 
-🖨️ Caixa para impressão 3D: [modelo no Printables](https://www.printables.com/model/1911580-vital-esp32-monitor-enclosure-temperature-humidity)
+[Modelos disponíveis no Printables](https://www.printables.com/model/1911580-vital-esp32-monitor-enclosure-temperature-humidity)
 
 ---
 
