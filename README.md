@@ -1,6 +1,8 @@
 # VITAL Painel de monitoramento — temperatura, umidade, inclinação e vibração.
 <img width="1844" height="730" alt="image" src="https://github.com/user-attachments/assets/131fc629-7087-49cc-9e6a-329258efc6c4" />
 
+🖨️ Caixa para impressão 3D: [modelo no Printables](https://www.printables.com/model/1911580-vital-esp32-monitor-enclosure-temperature-humidity)
+
 ---
 
 ## Requisitos do projeto
@@ -69,6 +71,18 @@ Dependências principais (declared em vital-dashboard/package.json):
     4. ESP32 grava em NVS e tenta reconectar ao novo Wi‑Fi.
   - Observação: esse fluxo não funciona em hosts remotos (Vercel, Netlify,
     etc.) porque não têm acesso à porta USB do seu hardware.
+
+---
+
+## Caixa impressa em 3D
+
+O modelo da caixa do VITAL (78 × 37 × 35 mm, tampa removível e abertura
+para o DHT11) está publicado no Printables, com os arquivos para impressão:
+
+**[VITAL – ESP32 Monitor Enclosure (Temperature & Humidity) no Printables](https://www.printables.com/model/1911580-vital-esp32-monitor-enclosure-temperature-humidity)**
+
+O mesmo modelo é usado na aba 3D view do painel
+(`vital-dashboard/public/models/`).
 
 ---
 
